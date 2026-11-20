@@ -46,3 +46,8 @@ node tests/run-tests.js
 2. Isi Script Properties yang dibutuhkan (kunci aplikasi marketplace dsb.) lewat editor Apps Script — **jangan** di kode.
 3. Deploy sebagai Web App, lalu ganti `ID_DEPLOYMENT_ANDA` di `web/pks-login.html` dan aplikasi Android.
 4. Untuk APK: buat keystore sendiri dan isi variabel `KS_PASS` sebelum menjalankan `android/build.sh`.
+
+## Membuka aplikasi
+
+Folder `docs/` berisi halaman pembuka (GitHub Pages) yang menampilkan aplikasi web Apps Script dengan alamat pendek.
+Akses tetap dijaga login tim di dalam aplikasi.
