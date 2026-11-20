@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Login PKS Keuangan</title>
+<style>
+  :root{--bg:#f4f6fb;--card:#fff;--ink:#0f1b3d;--muted:#5b6785;--blue:#315efb;--ok:#15803d;--bad:#b91c1c}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1220;--card:#121b2e;--ink:#e6ebf5;--muted:#9aa6c0;--blue:#5b82ff;--ok:#22c55e;--bad:#f87171}}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;display:grid;place-items:center;min-height:100svh;padding:16px;box-sizing:border-box}
+  .card{background:var(--card);border-radius:16px;padding:24px;max-width:440px;width:100%;box-shadow:0 8px 30px rgba(15,27,61,.12)}
+  h1{font-size:20px;margin:0 0 8px}p{margin:8px 0;color:var(--muted)}
+  .ok{color:var(--ok)}.bad{color:var(--bad)}
+  a.btn{display:block;text-align:center;background:var(--blue);color:#fff;text-decoration:none;font-weight:700;border-radius:12px;padding:14px;margin-top:16px}
+</style>
+</head>
+<body>
+<main class="card">
+  <h1 id="t">Memproses login…</h1>
+  <p id="m">Tunggu sebentar.</p>
+  <a class="btn" id="back" href="#" hidden>Kembali ke aplikasi</a>
+</main>
+<script>
+/* Halaman perantara login Google untuk aplikasi PKS Keuangan.
+   Menerima ?code&state dari Google lalu meneruskannya ke server aplikasi (tanpa cookie akun Google),
+   supaya tidak terkena error "tidak dapat membuka file" di Chrome HP yang berisi beberapa akun. */
+(function(){
+  var APP = 'https://script.google.com/macros/s/ID_DEPLOYMENT_ANDA/exec';
+  var q = new URLSearchParams(location.search), code = q.get('code') || '', state = q.get('state') || '', error = q.get('error') || '';
+  try { history.replaceState(null, '', location.pathname); } catch (e) {}   // hapus kode sekali pakai dari alamat
+  var t = document.getElementById('t'), m = document.getElementById('m'), back = document.getElementById('back');
+  back.href = APP;
+  function done(ok, msg){ t.textContent = ok ? 'Login diteruskan ✓' : 'Login belum berhasil'; t.className = ok ? 'ok' : 'bad'; m.textContent = msg; back.hidden = false; }
+  if (!/^[a-f0-9]{64}$/i.test(state)) { done(false, 'Permintaan login tidak valid. Mulai ulang dari aplikasi.'); return; }
+  fetch(APP, { method: 'POST', mode: 'no-cors', credentials: 'omit', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ kind: 'team-auth', code: code, state: state, error: error }) })
+    .then(function(){ done(true, 'Tutup tab ini dan kembali ke aplikasi PKS Keuangan. Login dilanjutkan otomatis dalam beberapa detik.'); })
+    .catch(function(){ done(false, 'Koneksi gagal. Periksa internet lalu mulai ulang login dari aplikasi.'); });
+})();
+</script>
+</body>
+</html>
